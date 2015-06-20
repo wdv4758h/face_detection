@@ -6,15 +6,21 @@
 
 using namespace cv;
 
+
+
 /** Function Headers */
 void detectAndDisplay( Mat frame );
 
+
+
 /** Global variables */
-String face_cascade_name = "haarcascade_frontalface_alt.xml";
-String eyes_cascade_name = "haarcascade_eye_tree_eyeglasses.xml";
+const String face_cascade_name = "haarcascade_frontalface_alt.xml";
+const String eyes_cascade_name = "haarcascade_eye_tree_eyeglasses.xml";
+const String window_name = "Capture - Face detection";
 CascadeClassifier face_cascade;
 CascadeClassifier eyes_cascade;
-String window_name = "Capture - Face detection";
+
+
 
 /** @function main */
 int main( void )
@@ -22,30 +28,54 @@ int main( void )
     VideoCapture capture;
     Mat frame;
 
+
+
     //-- 1. Load the cascades
-    if( !face_cascade.load( face_cascade_name ) ){ printf("--(!)Error loading face cascade\n"); return -1; };
-    if( !eyes_cascade.load( eyes_cascade_name ) ){ printf("--(!)Error loading eyes cascade\n"); return -1; };
+
+    if ( !face_cascade.load( face_cascade_name ) )
+    {
+        printf("--(!)Error loading face cascade\n");
+        return -1;
+    };
+
+    if ( !eyes_cascade.load( eyes_cascade_name ) )
+    {
+        printf("--(!)Error loading eyes cascade\n");
+        return -1;
+    };
+
+
 
     //-- 2. Read the video stream
+
     capture.open( -1 );
-    if ( ! capture.isOpened() ) { printf("--(!)Error opening video capture\n"); return -1; }
+
+    if ( ! capture.isOpened() )
+    {
+        printf("--(!)Error opening video capture\n");
+        return -1;
+    }
 
     while ( capture.read(frame) )
     {
-        if( frame.empty() )
+        if ( frame.empty() )
         {
             printf(" --(!) No captured frame -- Break!");
             break;
         }
 
         //-- 3. Apply the classifier to the frame
+
         detectAndDisplay( frame );
 
         int c = waitKey(10);
-        if( (char)c == 27 ) { break; } // escape
+
+        if ( (char)c == 27 ) { break; } // escape
     }
+
     return 0;
 }
+
 
 /** @function detectAndDisplay */
 void detectAndDisplay( Mat frame )
@@ -61,8 +91,16 @@ void detectAndDisplay( Mat frame )
 
     for ( size_t i = 0; i < faces.size(); i++ )
     {
-        Point center( faces[i].x + faces[i].width/2, faces[i].y + faces[i].height/2 );
-        ellipse( frame, center, Size( faces[i].width/2, faces[i].height/2 ), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
+        const Point center( faces[i].x + faces[i].width/2,
+                            faces[i].y + faces[i].height/2 );
+
+        ellipse( frame,     // image
+                 center,
+                 Size( faces[i].width/2, faces[i].height/2 ),   // axes
+                 0,                         // angle
+                 0, 360,                    // startAngle, endAngle
+                 Scalar( 255, 0, 255 ),     // color
+                 4, 8, 0 );                 // thickness, lineType, shift
 
         Mat faceROI = frame_gray( faces[i] );
         std::vector<Rect> eyes;
@@ -72,11 +110,19 @@ void detectAndDisplay( Mat frame )
 
         for ( size_t j = 0; j < eyes.size(); j++ )
         {
-            Point eye_center( faces[i].x + eyes[j].x + eyes[j].width/2, faces[i].y + eyes[j].y + eyes[j].height/2 );
+            const Point eye_center( faces[i].x + eyes[j].x + eyes[j].width/2,
+                                    faces[i].y + eyes[j].y + eyes[j].height/2 );
+
             int radius = cvRound( (eyes[j].width + eyes[j].height)*0.25 );
-            circle( frame, eye_center, radius, Scalar( 255, 0, 0 ), 4, 8, 0 );
+
+            circle( frame,      // image
+                    eye_center,
+                    radius,
+                    Scalar( 255, 0, 0 ),    // color
+                    4, 8, 0 );  // thickness, lineType, shift
         }
     }
+
     //-- Show what you got
     imshow( window_name, frame );
 }
