@@ -4,6 +4,18 @@ Face Detection
 
 only detect, no recognition here
 
+Build & Run
+========================================
+
+.. code-block:: sh
+
+    $ git clone https://github.com/wdv4758h/face_detection.git
+    $ cd face_detection
+    $ make opencv2_sample   # build
+    $ cd src/opencv2/       # need the cascade data in this folder ...
+    $ ../../bin/opencv2_objectDetection     # run
+
+
 Viola–Jones object detection framework
 ========================================
 
