@@ -14,8 +14,8 @@ void detectAndDisplay( Mat frame );
 
 
 /** Global variables */
-const String face_cascade_name = "haarcascade_frontalface_alt.xml";
-const String window_name = "Capture - Face detection";
+constexpr auto face_cascade_name = "haarcascade_frontalface_alt.xml";
+constexpr auto window_name = "Capture - Face detection";
 CascadeClassifier face_cascade;
 
 
